@@ -5,6 +5,7 @@ import { db, schema } from "@/db";
 import { open } from "@/lib/crypto";
 import { APP_NAME, chatEnabled, getSettings } from "@/lib/settings";
 import { currentVisitor } from "@/lib/visitor";
+import { auth } from "@/auth";
 import { Chat } from "./chat";
 
 export const dynamic = "force-dynamic";
@@ -56,6 +57,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ c
       greeting={greeting}
       enabled={chatEnabled() && session?.visitor.status !== "blocked"}
       handle={session?.visitor.handle ?? null}
+      isOwner={Boolean((await auth())?.user?.role)}
       conversations={conversations}
       activeId={activeId}
       initialMessages={messages}

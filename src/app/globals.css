@@ -371,3 +371,10 @@ a.conv-row:hover { border-color: var(--line-strong); color: var(--fg); }
 .summary-card > .meta strong { font-family: var(--cb-font-display); font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--cb-gold); }
 .summary-body { font-size: 15px; line-height: 1.7; margin: 12px 0; color: var(--cb-text-body); }
 .shroud-note { display: block; margin: 0; border-top: 1px solid var(--line); padding-top: 10px; }
+
+/* Owner sign-in link (bottom of the visitor sidebar) */
+.owner-link {
+  display: inline-flex; align-items: center; gap: 8px; min-height: var(--cb-touch); padding: 0 10px;
+  font-size: 12px; letter-spacing: 0.08em; color: var(--cb-text-faint); text-decoration: none;
+}
+.owner-link:hover { color: var(--cb-gold); }

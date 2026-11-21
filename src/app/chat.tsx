@@ -32,6 +32,12 @@ const Icon = {
       <path d="M9 12l2 2 4-4" />
     </svg>
   ),
+  key: (
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true">
+      <circle cx="8" cy="15" r="4" />
+      <path d="M10.8 12.2L20 3M16 7l3 3M14 9l2 2" />
+    </svg>
+  ),
   check: (
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" aria-hidden="true">
       <path d="M5 12l5 5 9-10" />
@@ -65,6 +71,7 @@ export function Chat({
   greeting,
   enabled,
   handle,
+  isOwner,
   conversations,
   activeId,
   initialMessages,
@@ -74,6 +81,7 @@ export function Chat({
   greeting: string;
   enabled: boolean;
   handle: string | null;
+  isOwner: boolean;
   conversations: Convo[];
   activeId: string | null;
   initialMessages: Msg[];
@@ -252,6 +260,10 @@ export function Chat({
             {Icon.shield}
           </Link>
         </div>
+        <Link href={isOwner ? "/admin" : "/login"} className="owner-link">
+          {Icon.key}
+          {isOwner ? "Owner dashboard" : "Owner login"}
+        </Link>
       </aside>
 
       <button
@@ -400,7 +412,8 @@ export function Chat({
             </button>
           </form>
           <p className="disclaimer">
-            {appName} can make mistakes. Double-check anything important. · <Link href="/privacy">Privacy</Link>
+            {appName} can make mistakes. Double-check anything important. · <Link href="/privacy">Privacy</Link> ·{" "}
+            <Link href={isOwner ? "/admin" : "/login"}>{isOwner ? "Dashboard" : "Owner login"}</Link>
           </p>
         </div>
       </main>
