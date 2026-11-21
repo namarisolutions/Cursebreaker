@@ -1,6 +1,8 @@
 import { requireAdmin } from "@/lib/admin";
+import { emailEnabled } from "@/lib/email";
 import { chatEnabled, DEFAULTS, getSettings, MODEL } from "@/lib/settings";
 import { SettingForm } from "./prompt-form";
+import { TestEmailButton } from "./test-email";
 
 export default async function Settings() {
   const admin = await requireAdmin();
@@ -8,6 +10,13 @@ export default async function Settings() {
   const canEdit = admin.role === "owner";
   const checks: [string, boolean, string][] = [
     ["AI replies (ANTHROPIC_API_KEY)", chatEnabled(), `Required. Visitors can't chat without it. Model: ${MODEL}.`],
+    [
+      "Email notifications (Resend)",
+      emailEnabled(),
+      emailEnabled()
+        ? `Each sent summary is emailed to ${(process.env.NOTIFY_EMAIL_TO ?? "").split(",").length} address(es).`
+        : "Optional. Set RESEND_API_KEY and NOTIFY_EMAIL_TO to get an email for each sent summary.",
+    ],
     ["Shared rate limits (REDIS_URL)", Boolean(process.env.REDIS_URL), "Needed if you run more than one replica."],
   ];
 
@@ -29,6 +38,7 @@ export default async function Settings() {
             </tbody>
           </table>
         </div>
+        <TestEmailButton disabled={!emailEnabled()} />
       </div>
       <div className="card">
         <strong>AI system prompt</strong>

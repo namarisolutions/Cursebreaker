@@ -44,7 +44,7 @@ export default function Privacy() {
           only in your browser. The site stores only a fingerprint of that cookie, so neither the owner nor anyone with
           access to the database can read your conversations.
         </li>
-        <li><b>Summaries you choose to send</b>, which the owner can read.</li>
+        <li><b>Summaries you choose to send</b>, which the owner can read. The owner may also receive them by email (delivered through the email service Resend).</li>
         <li><b>A random name</b> for your browser, plus timestamps and message counts.</li>
         <li>We do not ask for or store your name, email address, or IP address.</li>
       </ul>

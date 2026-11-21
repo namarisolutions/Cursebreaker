@@ -1,7 +1,9 @@
 import { and, asc, eq, sql } from "drizzle-orm";
+import { after } from "next/server";
 import { z } from "zod";
 import { db, schema } from "@/db";
 import { open, seal } from "@/lib/crypto";
+import { notifyOwnerOfSummary } from "@/lib/email";
 import { rateLimit } from "@/lib/ratelimit";
 import { chatEnabled } from "@/lib/settings";
 import { generateSummary, type Summary } from "@/lib/summary";
@@ -39,7 +41,7 @@ export async function POST(req: Request) {
 
   const { conversations: conv, messages: msg } = schema;
   const [c] = await db
-    .select({ id: conv.id, lastMessageAt: conv.lastMessageAt, draftSealed: conv.draftSealed, status: conv.status })
+    .select({ id: conv.id, lastMessageAt: conv.lastMessageAt, draftSealed: conv.draftSealed, status: conv.status, submittedAt: conv.submittedAt })
     .from(conv)
     .where(and(eq(conv.id, input.conversation_id), eq(conv.visitorId, visitor.id)));
   if (!c) return json({ error: "Conversation not found." }, 404);
@@ -95,5 +97,17 @@ export async function POST(req: Request) {
         : {}),
     })
     .where(eq(conv.id, c.id));
+
+  // Email the owner the approved summary (only if Resend is configured). Runs after the response.
+  after(() =>
+    notifyOwnerOfSummary({
+      id: c.id,
+      topic: draft.topic,
+      summary: draft.summary,
+      flagged: draft.flag,
+      flagReason: draft.flag ? draft.flag_reason : null,
+      isUpdate: c.submittedAt !== null,
+    }),
+  );
   return json({ sent: true, submitted_at: now.toISOString() });
 }

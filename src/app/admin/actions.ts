@@ -6,6 +6,7 @@ import { redirect } from "next/navigation";
 import { z } from "zod";
 import { db, schema } from "@/db";
 import { audit, requireAdmin, requireOwner } from "@/lib/admin";
+import { sendTestEmail } from "@/lib/email";
 import { DEFAULTS, type SettingKey } from "@/lib/settings";
 
 const id = z.uuid();
@@ -81,4 +82,13 @@ export async function saveSetting(
   await audit(admin.id, form.get("reset") ? `settings.${key}.reset` : `settings.${key}.update`);
   revalidatePath("/admin/settings");
   return { saved: true };
+}
+
+export async function sendTestEmailAction(): Promise<{ ok: boolean; message: string }> {
+  const admin = await requireAdmin();
+  const result = await sendTestEmail();
+  await audit(admin.id, "settings.email_test", result.ok ? "sent" : "failed");
+  return result.ok
+    ? { ok: true, message: "Test email sent. Check your inbox (and spam folder)." }
+    : { ok: false, message: result.error };
 }

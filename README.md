@@ -25,6 +25,10 @@ Things to know:
 - **Settings:** the AI's system prompt, what the summaries should focus on, and the greeting (owners can edit).
 - **Audit:** every admin action.
 
+### Email notifications (Resend)
+
+Set `RESEND_API_KEY` and `NOTIFY_EMAIL_TO` (comma-separated for several) to get an email whenever a visitor sends you a summary; flagged ones say "⚠️ Flagged" in the subject. The email contains only the approved summary and a link to the conversation in your dashboard (set `APP_URL`). For delivery to any address, verify your domain in Resend and set `NOTIFY_EMAIL_FROM`, e.g. `Cursebreaker <notify@yourdomain.com>`; until then Resend's test sender only delivers to your Resend account's own email. Use **Settings → Send test email** to check the setup.
+
 ## Limits and cost
 
 Each visitor message is one Claude call (the streamed reply), and each summary preview is one more at low effort. Both include the conversation so far; prompt caching keeps the repeated history in replies cheap. Previews are limited to 10 per visitor per hour. Defaults:
