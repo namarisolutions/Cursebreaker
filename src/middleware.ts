@@ -5,5 +5,6 @@ import { authConfig } from "./auth.config";
 export default NextAuth(authConfig).auth;
 
 export const config = {
-  matcher: ["/((?!api/|_next/static|_next/image|favicon.ico).*)"],
+  // Public static files (favicon, email images) must bypass the admin gate.
+  matcher: ["/((?!api/|_next/static|_next/image|favicon\\.ico|icon\\.svg|email/).*)"],
 };
