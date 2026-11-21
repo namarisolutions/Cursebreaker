@@ -378,3 +378,13 @@ a.conv-row:hover { border-color: var(--line-strong); color: var(--fg); }
   font-size: 12px; letter-spacing: 0.08em; color: var(--cb-text-faint); text-decoration: none;
 }
 .owner-link:hover { color: var(--cb-gold); }
+
+/* Invites */
+.invite-form { display: grid; gap: 6px; max-width: 640px; }
+.field-label { font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--cb-text-faint); margin-top: 8px; }
+.invite-form textarea { font: 14px/1.6 var(--cb-font-ui); }
+.notice-warn {
+  margin: 0 0 14px; padding: 10px 14px; border-radius: var(--cb-radius-md);
+  border: 1px solid var(--cb-border-strong); background: var(--cb-surface-2); color: var(--cb-text-muted); font-size: 13px; line-height: 1.6;
+}
+td.meta { display: table-cell; }

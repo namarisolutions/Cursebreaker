@@ -46,7 +46,7 @@ export default function Privacy() {
         </li>
         <li><b>Summaries you choose to send</b>, which the owner can read. The owner may also receive them by email (delivered through the email service Resend).</li>
         <li><b>A random name</b> for your browser, plus timestamps and message counts.</li>
-        <li>We do not ask for or store your name, email address, or IP address.</li>
+        <li>We do not ask for or store your name, email address, or IP address. If you were invited by email, the link you received carries no tracking code, so your conversations can&rsquo;t be connected to that invite.</li>
       </ul>
 
       <h2>The AI provider</h2>

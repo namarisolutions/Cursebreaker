@@ -6,7 +6,8 @@ import { redirect } from "next/navigation";
 import { z } from "zod";
 import { db, schema } from "@/db";
 import { audit, requireAdmin, requireOwner } from "@/lib/admin";
-import { sendTestEmail } from "@/lib/email";
+import { sendInvite, sendTestEmail } from "@/lib/email";
+import { rateLimit } from "@/lib/ratelimit";
 import { DEFAULTS, type SettingKey } from "@/lib/settings";
 
 const id = z.uuid();
@@ -91,4 +92,38 @@ export async function sendTestEmailAction(): Promise<{ ok: boolean; message: str
   return result.ok
     ? { ok: true, message: "Test email sent. Check your inbox (and spam folder)." }
     : { ok: false, message: result.error };
+}
+
+export type InviteResult = { results?: { email: string; ok: boolean; error?: string }[]; error?: string };
+
+export async function sendInvites(_prev: InviteResult, form: FormData): Promise<InviteResult> {
+  const admin = await requireAdmin();
+  const raw = String(form.get("emails") ?? "");
+  const note = String(form.get("note") ?? "").trim().slice(0, 1000) || null;
+
+  const candidates = [...new Set(raw.split(/[\s,;]+/).map((e) => e.trim().toLowerCase()).filter(Boolean))];
+  if (candidates.length === 0) return { error: "Enter at least one email address." };
+  if (candidates.length > 20) return { error: "Send up to 20 invites at a time." };
+  const bad = candidates.filter((e) => !z.email().safeParse(e).success);
+  if (bad.length) return { error: `Not a valid email: ${bad.slice(0, 3).join(", ")}` };
+
+  const rl = await rateLimit(`invites:${admin.id}`, 100, 3600);
+  if (!rl.ok) return { error: "Invite limit reached (100 per hour). Try again later." };
+
+  const results: NonNullable<InviteResult["results"]> = [];
+  for (const email of candidates) {
+    const r = await sendInvite(email, note);
+    results.push(r.ok ? { email, ok: true } : { email, ok: false, error: r.error });
+    await db.insert(schema.invites).values({
+      email,
+      note,
+      status: r.ok ? "sent" : "failed",
+      error: r.ok ? null : r.error.slice(0, 300),
+      sentBy: admin.id,
+    });
+  }
+  const sent = results.filter((r) => r.ok).length;
+  await audit(admin.id, "invites.send", `${sent} sent, ${results.length - sent} failed`);
+  revalidatePath("/admin/invites");
+  return { results };
 }

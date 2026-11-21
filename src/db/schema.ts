@@ -81,6 +81,24 @@ export const settings = pgTable("settings", {
   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
 });
 
+// Email invites the owner sent. Deliberately not linked to visitors: the invite link
+// carries no token, so nobody can tell which conversations came from which invitee.
+export const invites = pgTable(
+  "invites",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    email: text("email").notNull(),
+    note: text("note"),
+    status: text("status").notNull(), // "sent" | "failed"
+    error: text("error"),
+    sentBy: uuid("sent_by")
+      .notNull()
+      .references(() => admins.id),
+    sentAt: timestamp("sent_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [index("invites_sent_idx").on(t.sentAt)],
+);
+
 export const auditLog = pgTable(
   "audit_log",
   {
