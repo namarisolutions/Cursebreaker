@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import Logo from "@/components/Logo";
 import { APP_NAME } from "@/lib/settings";
 
 export const metadata: Metadata = { title: `Privacy · ${APP_NAME}` };
@@ -8,7 +9,10 @@ export default function Privacy() {
   const days = Number(process.env.RETENTION_DAYS) || null;
   return (
     <main className="doc">
-      <p><Link href="/">← Back to chat</Link></p>
+      <Link href="/" className="brand" aria-label="Back to chat">
+        <Logo size={36} />
+        <span className="wordmark">{APP_NAME}</span>
+      </Link>
       <h1>Privacy at {APP_NAME}</h1>
       <p>
         This site lets you talk with an AI assistant. The AI acts as a privacy shield between you and the owner of{" "}

@@ -1,0 +1,42 @@
+/* Cursebreaker design tokens */
+@import url("https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap");
+
+:root {
+  /* Surfaces: true black, with near-black steps for raised elements */
+  --cb-bg: #000000;          /* app, sidebar, header, composer */
+  --cb-surface-1: #050505;   /* cards inside a message */
+  --cb-surface-2: #0B0A07;   /* active sidebar item, avatar fill */
+  --cb-surface-3: #0F0D08;   /* user message bubble */
+
+  /* Lines */
+  --cb-border: #17140D;      /* dividers, card borders */
+  --cb-border-strong: #3A3121; /* bubble + selected item borders, secondary buttons */
+
+  /* Gold */
+  --cb-gold: #E2B95C;        /* accent: logo, primary buttons, prompt, headings */
+  --cb-gold-hover: #F3D894;
+  --cb-on-gold: #000000;     /* text/icons on gold */
+
+  /* Text */
+  --cb-text: #EDE6D6;        /* primary */
+  --cb-text-body: #D9D0BC;   /* assistant message body */
+  --cb-text-muted: #B8AE98;  /* secondary, inactive nav */
+  --cb-text-faint: #9C927C;  /* labels, timestamps, footnote (passes 4.5:1 on black) */
+
+  /* Type */
+  --cb-font-display: "Cinzel", serif;            /* wordmark + small caps headings */
+  --cb-font-ui: "Inter", system-ui, sans-serif;  /* interface + messages */
+  --cb-font-mono: "JetBrains Mono", monospace;   /* prompt ❯, status, numbering */
+
+  /* Shape */
+  --cb-radius-sm: 6px;   /* nav items, chips */
+  --cb-radius-md: 8px;   /* buttons */
+  --cb-radius-lg: 10px;  /* cards */
+  --cb-radius-xl: 14px;  /* composer */
+  --cb-bubble-radius: 16px 16px 4px 16px; /* user bubble, tail bottom-right */
+
+  /* Sizing */
+  --cb-sidebar-w: 260px;     /* grows to 300px max */
+  --cb-thread-max: 820px;    /* chat column + composer max width */
+  --cb-touch: 44px;          /* minimum hit target */
+}

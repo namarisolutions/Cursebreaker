@@ -14,7 +14,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ c
   const { c } = await searchParams;
   const [session, { greeting }] = await Promise.all([currentVisitor(), getSettings()]);
 
-  let conversations: { id: string; title: string }[] = [];
+  let conversations: { id: string; title: string; updatedAt: string }[] = [];
   let messages: { id: string; role: "user" | "assistant"; content: string }[] = [];
   let activeId: string | null = null;
   let sent: { at: string; outdated: boolean } | null = null;
@@ -33,7 +33,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ c
       .where(eq(schema.conversations.visitorId, visitor.id))
       .orderBy(desc(schema.conversations.lastMessageAt))
       .limit(50);
-    conversations = rows.map((r) => ({ id: r.id, title: open(key, r.titleSealed) ?? "Conversation" }));
+    conversations = rows.map((r) => ({ id: r.id, title: open(key, r.titleSealed) ?? "Conversation", updatedAt: r.lastMessageAt.toISOString() }));
 
     if (c && z.uuid().safeParse(c).success && conversations.some((x) => x.id === c)) {
       activeId = c;
@@ -55,6 +55,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ c
       appName={APP_NAME}
       greeting={greeting}
       enabled={chatEnabled() && session?.visitor.status !== "blocked"}
+      handle={session?.visitor.handle ?? null}
       conversations={conversations}
       activeId={activeId}
       initialMessages={messages}
