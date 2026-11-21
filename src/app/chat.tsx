@@ -34,6 +34,7 @@ export function Chat({
   const [sent, setSent] = useState(initialSent);
   const [preview, setPreview] = useState<{ topic: string; summary: string } | null>(null);
   const [submitting, setSubmitting] = useState<"preview" | "send" | null>(null);
+  const [confirmDelete, setConfirmDelete] = useState(false);
   const endRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
@@ -116,6 +117,21 @@ export function Chat({
     }
   }
 
+  async function remove() {
+    if (!convId) return;
+    const res = await fetch("/api/chat/delete", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ conversation_id: convId }),
+    }).catch(() => null);
+    if (!res?.ok) {
+      setError("Couldn't delete the conversation. Please try again.");
+      setConfirmDelete(false);
+      return;
+    }
+    window.location.assign("/");
+  }
+
   const hasUserMessage = messages.some((m) => m.role === "user");
   const canSubmit = enabled && Boolean(convId) && hasUserMessage && !busy;
 
@@ -137,6 +153,7 @@ export function Chat({
             </Link>
           ))}
         </nav>
+        <Link href="/privacy" className="side-foot">How privacy works</Link>
       </aside>
 
       <main className="chat-main">
@@ -148,7 +165,7 @@ export function Chat({
         <div className="notice" role="note">
           Nothing reaches the owner of {appName} until you press <b>Send to owner</b>. Even then, they see only a short
           AI-written summary that you preview first, never your words. Your messages are encrypted with a key that
-          exists only in this browser.
+          exists only in this browser. <Link href="/privacy">Learn more</Link>
         </div>
 
         <div className="chat-log" aria-live="polite">
@@ -189,11 +206,24 @@ export function Chat({
                   : `Sent to the owner ✓ ${new Date(sent.at).toLocaleString([], { dateStyle: "medium", timeStyle: "short" })}`
                 : "Only you can see this conversation."}
             </span>
-            {(!sent || sent.outdated) && (
-              <button type="button" className="send-owner" onClick={() => submit("preview")} disabled={submitting !== null}>
-                {submitting === "preview" ? "Preparing summary…" : sent ? "Send update" : "Send to owner"}
-              </button>
-            )}
+            <span className="send-actions">
+              {confirmDelete ? (
+                <>
+                  <span className="send-status">Delete permanently{sent ? ", including what you sent" : ""}?</span>
+                  <button type="button" className="danger" onClick={remove}>Delete</button>
+                  <button type="button" onClick={() => setConfirmDelete(false)}>Cancel</button>
+                </>
+              ) : (
+                <>
+                  <button type="button" className="link-btn" onClick={() => setConfirmDelete(true)}>Delete</button>
+                  {(!sent || sent.outdated) && (
+                    <button type="button" className="send-owner" onClick={() => submit("preview")} disabled={submitting !== null}>
+                      {submitting === "preview" ? "Preparing summary…" : sent ? "Send update" : "Send to owner"}
+                    </button>
+                  )}
+                </>
+              )}
+            </span>
           </div>
         )}
 

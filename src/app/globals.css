@@ -203,3 +203,17 @@ textarea {
   border: 1px solid var(--line); border-radius: 6px; padding: 8px 10px; width: 100%;
 }
 code { font: 12px ui-monospace, SFMono-Regular, Menlo, monospace; }
+
+/* Chat extras */
+.side-foot { margin-top: auto; padding: 8px 6px 0; font-size: 12px; color: var(--muted); }
+.send-actions { display: inline-flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.link-btn { border: none; background: none; color: var(--muted); padding: 6px 4px; text-decoration: underline; }
+.link-btn:hover { color: var(--danger); }
+.notice a { color: inherit; text-decoration: underline; }
+
+/* Long-form page (privacy) */
+main.doc { max-width: 680px; line-height: 1.65; font-size: 15px; }
+main.doc h1 { font-size: 24px; margin-top: 8px; }
+main.doc h2 { font-size: 17px; margin: 28px 0 8px; }
+main.doc ul { padding-left: 20px; }
+main.doc li { margin-bottom: 6px; }

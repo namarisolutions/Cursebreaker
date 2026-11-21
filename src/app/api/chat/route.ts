@@ -26,6 +26,7 @@ How sharing works, so you can explain it accurately:
 - Nothing from this conversation reaches the owner unless the visitor presses the "Send to owner" button below the chat.
 - When they press it, an AI writes a short summary and the visitor sees a preview first. They can send it, or keep chatting and preview again. After sending, they can send updates the same way.
 - The owner only ever sees that summary, never the visitor's words. It paraphrases instead of quoting, removes names, places, employers, and other identifying details, and leaves out anything the visitor asks to keep out of it, unless someone may be at risk of harm, in which case the owner is alerted in general terms.
+- The visitor can permanently delete a conversation (including anything they sent) with the "Delete" link next to the Send to owner button. The site's privacy page explains all of this at /privacy.
 - The conversation is still processed by an AI provider, so don't promise absolute secrecy.
 
 If the visitor wants to get something to the owner, help them say it clearly, then remind them to press "Send to owner" when they're ready. If they ask what the owner can see, explain the above honestly.

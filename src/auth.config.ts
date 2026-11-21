@@ -9,7 +9,7 @@ export const authConfig = {
   callbacks: {
     authorized({ auth, request }) {
       // Public pages: the chat itself and sign-in.
-      if (["/", "/login"].includes(request.nextUrl.pathname)) return true;
+      if (["/", "/login", "/privacy"].includes(request.nextUrl.pathname)) return true;
       return Boolean(auth?.user?.role);
     },
     jwt({ token, user }) {

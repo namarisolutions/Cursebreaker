@@ -53,20 +53,23 @@ After changing `src/db/schema.ts`, run `npm run db:generate` and commit the new 
 
 ## Deploying to Railway
 
-1. Create a project and deploy this repo as a service. `railway.json` handles build, start, the healthcheck, and runs `npm run db:migrate` before each deploy.
-2. Add the **Postgres** and **Redis** databases.
-3. Set these variables on the app service:
-   - `DATABASE_URL=${{Postgres.DATABASE_URL}}`
-   - `REDIS_URL=${{Redis.REDIS_URL}}`
-   - `AUTH_SECRET=<openssl rand -base64 32>`
-   - `ANTHROPIC_API_KEY=<your key>`
-   - `APP_NAME=<your site's name>`
-4. Generate a public domain.
-5. Create your admin login from your machine. Copy `DATABASE_PUBLIC_URL` from the Postgres service's variables, then run `DATABASE_URL='<public url>' npm run admin:create -- you@example.com owner`.
-6. Sign in at `https://<your domain>/login` and adjust the system prompt and summary instructions in Settings. Then share `https://<your domain>/`.
-7. **Retention (optional):** add a second service from the same repo with start command `node scripts/retention.mjs`, a cron schedule such as `0 4 * * *`, and `DATABASE_URL` plus `RETENTION_DAYS` (default 180).
-8. Enable Railway's Postgres backups.
+1. In Railway, choose **New Project → Deploy from GitHub repo** and pick this repository. `railway.json` handles the build, start, and healthcheck, and runs `npm run db:migrate` before each deploy.
+2. In the same project, add **Postgres** and **Redis** (New → Database).
+3. On the app service, open **Variables** and add:
+   - `DATABASE_URL` = `${{Postgres.DATABASE_URL}}`
+   - `REDIS_URL` = `${{Redis.REDIS_URL}}`
+   - `AUTH_SECRET` = a long random string (e.g. `openssl rand -base64 32`)
+   - `ANTHROPIC_API_KEY` = your Anthropic API key
+   - `APP_NAME` = your site's name
+   - `ADMIN_EMAIL` and `ADMIN_PASSWORD` (12+ characters): your dashboard login, created automatically on the first deploy
+4. Under **Settings → Networking**, click **Generate Domain**.
+5. Once the deploy is green, sign in at `https://<your domain>/login`, then **delete `ADMIN_PASSWORD`** from the variables. The login keeps working.
+6. In **Settings** on the dashboard, adjust the system prompt and summary instructions, then share `https://<your domain>/`.
+7. **Retention (optional):** add a second service from the same repo with start command `node scripts/retention.mjs`, a cron schedule such as `0 4 * * *`, and `DATABASE_URL` plus `RETENTION_DAYS`. Set the same `RETENTION_DAYS` on the app service so the privacy page states it.
+8. Enable Postgres backups in Railway.
 
-## Still to do
+To add more admins later, copy `DATABASE_PUBLIC_URL` from the Postgres service and run `DATABASE_URL='<public url>' npm run admin:create -- someone@example.com moderator` from your machine.
 
-- Terms of service / privacy notice page that matches what you actually retain
+## Privacy page
+
+`/privacy` explains to visitors what is stored, what the owner sees, the AI provider's role, and how to delete conversations. Review it before launch and adjust it to your situation. It is a plain-language notice, not legal advice.
